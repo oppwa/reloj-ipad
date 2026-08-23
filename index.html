@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Estación iPad</title>
+  <title>Dashboard iPad</title>
   <style>
     * { -webkit-box-sizing: border-box; box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
@@ -15,128 +15,293 @@
       color: #ffffff;
       font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
       overflow: hidden;
+    }
+
+    /* Fondo dinámico de fotos con transición */
+    #bg-layer {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-size: cover;
+      background-position: center;
+      -webkit-transition: opacity 1.5s ease-in-out;
+      transition: opacity 1.5s ease-in-out;
+      z-index: 1;
+      opacity: 0.45;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: -webkit-radial-gradient(center, ellipse cover, rgba(11,15,25,0.4) 0%, rgba(11,15,25,0.85) 100%);
+      background: radial-gradient(ellipse at center, rgba(11,15,25,0.4) 0%, rgba(11,15,25,0.85) 100%);
+      z-index: 2;
+    }
+
+    .container {
+      position: relative;
+      z-index: 3;
+      width: 100%;
+      height: 100%;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-direction: row;
+      flex-direction: row;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-around;
+      justify-content: space-around;
+      padding: 30px;
+    }
+
+    /* 1. Calendario estilo Hoja/Widget (Izquierda) */
+    .calendar-card {
+      width: 220px;
+      background: #ffffff;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    .cal-header {
+      background: #e11d48;
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 1.4rem;
+      padding: 10px 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+    .cal-day-num {
+      color: #1e293b;
+      font-size: 5.5rem;
+      font-weight: 800;
+      line-height: 1;
+      padding: 15px 0 5px 0;
+    }
+    .cal-day-name {
+      color: #64748b;
+      font-size: 1.3rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      padding-bottom: 18px;
+      letter-spacing: 1px;
+    }
+
+    /* 2. Sección Derecha: Reloj, Saludo, Frases y Clima */
+    .right-section {
       display: -webkit-flex;
       display: flex;
       -webkit-flex-direction: column;
       flex-direction: column;
-      -webkit-justify-content: center;
-      justify-content: center;
-      -webkit-align-items: center;
-      align-items: center;
+      -webkit-align-items: flex-end;
+      align-items: flex-end;
+      text-align: right;
     }
-    .greeting {
+
+    .greeting-box {
       font-size: 1.8rem;
-      font-weight: 300;
+      font-weight: 400;
       color: #38bdf8;
-      letter-spacing: 1px;
-      margin-bottom: 15px;
+      margin-bottom: 5px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.7);
       min-height: 2.2rem;
-      opacity: 1;
-      -webkit-transition: opacity 0.8s ease-in-out;
-      transition: opacity 0.8s ease-in-out;
+      -webkit-transition: opacity 0.8s ease;
+      transition: opacity 0.8s ease;
     }
-    .greeting.fade {
-      opacity: 0;
-    }
-    .clock {
-      font-size: 6rem;
+
+    .digital-clock {
+      font-size: 6.5rem;
       font-weight: 200;
       letter-spacing: -2px;
+      line-height: 1;
+      text-shadow: 0 4px 20px rgba(0,0,0,0.8);
     }
-    .date {
-      font-size: 1.6rem;
+    .digital-clock span.seconds {
+      font-size: 3.2rem;
       color: #94a3b8;
-      text-transform: capitalize;
-      margin-top: 5px;
+      margin-left: 4px;
     }
-    .weather-card {
-      margin-top: 25px;
-      padding: 15px 35px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 16px;
+
+    .phrase-box {
+      font-size: 1.15rem;
+      font-style: italic;
+      color: #e2e8f0;
+      margin: 15px 0 20px 0;
+      max-width: 420px;
+      line-height: 1.4;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+      min-height: 2.5rem;
+      -webkit-transition: opacity 0.8s ease;
+      transition: opacity 0.8s ease;
+    }
+
+    /* 3. Tarjeta de Clima */
+    .weather-widget {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 12px 24px;
+      border-radius: 14px;
       display: -webkit-flex;
       display: flex;
       -webkit-align-items: center;
       align-items: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
     }
-    .temp {
-      font-size: 3.2rem;
-      font-weight: bold;
+    .temp-value {
+      font-size: 2.8rem;
+      font-weight: 700;
       color: #38bdf8;
-      margin-right: 20px;
+      margin-right: 15px;
     }
-    .details {
-      font-size: 1.1rem;
+    .weather-info {
+      text-align: left;
+      font-size: 0.95rem;
       color: #cbd5e1;
-      line-height: 1.4;
+      line-height: 1.3;
     }
   </style>
 </head>
 <body>
 
-  <div class="greeting" id="greeting">¡Hola Wali!</div>
-  <div class="clock" id="clock">--:--:--</div>
-  <div class="date" id="date">Cargando...</div>
+  <div id="bg-layer"></div>
+  <div class="overlay"></div>
 
-  <div class="weather-card">
-    <div class="temp" id="temp">--°C</div>
-    <div class="details">
-      <div id="wind">Viento: -- km/h</div>
-      <div>Cusco</div>
+  <div class="container">
+    <!-- Widget Calendario (Izquierda) -->
+    <div class="calendar-card">
+      <div class="cal-header" id="cal-month">---</div>
+      <div class="cal-day-num" id="cal-day">--</div>
+      <div class="cal-day-name" id="cal-weekday">---</div>
+    </div>
+
+    <!-- Sección Reloj + Clima (Derecha) -->
+    <div class="right-section">
+      <div class="greeting-box" id="greeting">¡Hola Wali!</div>
+      <div class="digital-clock">
+        <span id="hours-mins">00:00</span><span class="seconds" id="secs">:00</span>
+      </div>
+      <div class="phrase-box" id="phrase">"Cada día es una nueva oportunidad para crear algo genial."</div>
+      
+      <div class="weather-widget">
+        <div class="temp-value" id="temp">--°C</div>
+        <div class="weather-info">
+          <div id="weather-desc">Cargando clima...</div>
+          <div id="wind-speed">Viento: -- km/h</div>
+          <div><strong>Cusco</strong></div>
+        </div>
+      </div>
     </div>
   </div>
 
   <script>
-    // 1. Saludos aleatorios periódicos
-    var greetings = [
-      "¡Hola Wali!",
-      "¡Hola Allison!",
-      "Que tengan un gran día ✨",
-      "Hola Wali 👋",
-      "Hola Allison 😊"
-    ];
-    var greetingElem = document.getElementById('greeting');
+    function pad(n) { return n < 10 ? '0' + n : n; }
 
-    function updateGreeting() {
-      greetingElem.className = 'greeting fade';
+    var meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    var diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+    // 1. Reloj y Calendario
+    function updateDateTime() {
+      var now = new Date();
+      
+      // Reloj
+      document.getElementById('hours-mins').innerHTML = pad(now.getHours()) + ':' + pad(now.getMinutes());
+      document.getElementById('secs').innerHTML = ':' + pad(now.getSeconds());
+
+      // Calendario
+      document.getElementById('cal-month').innerHTML = meses[now.getMonth()];
+      document.getElementById('cal-day').innerHTML = now.getDate();
+      document.getElementById('cal-weekday').innerHTML = diasSemana[now.getDay()];
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+
+    // 2. Saludos y Frases Aleatorias
+    var greetings = [
+      "¡Hola Wali! 👋",
+      "¡Hola Allison! 😊",
+      "¡Hola Wali y Allison! ✨",
+      "Que tengan un gran día ☕",
+      "Hola Wali 🚀",
+      "Hola Allison 🌸"
+    ];
+
+    var phrases = [
+      "\"Cada día es una oportunidad para aprender algo nuevo.\"",
+      "\"La constancia y el enfoque construyen grandes cosas.\"",
+      "\"Disfruta de los pequeños momentos de hoy.\"",
+      "\"Crea soluciones simples para problemas complejos.\"",
+      "\"Respira profundo y sigue adelante.\""
+    ];
+
+    function rotateMessages() {
+      var greetElem = document.getElementById('greeting');
+      var phraseElem = document.getElementById('phrase');
+
+      greetElem.style.opacity = '0';
+      phraseElem.style.opacity = '0';
+
       setTimeout(function() {
-        var randomIndex = Math.floor(Math.random() * greetings.length);
-        greetingElem.innerHTML = greetings[randomIndex];
-        greetingElem.className = 'greeting';
+        var gIndex = Math.floor(Math.random() * greetings.length);
+        var pIndex = Math.floor(Math.random() * phrases.length);
+
+        greetElem.innerHTML = greetings[gIndex];
+        phraseElem.innerHTML = phrases[pIndex];
+
+        greetElem.style.opacity = '1';
+        phraseElem.style.opacity = '1';
       }, 800);
     }
-    setInterval(updateGreeting, 20000); // Cambia cada 20 segundos
+    setInterval(rotateMessages, 18000);
 
-    // 2. Reloj en tiempo real
-    function pad(n) {
-      return n < 10 ? '0' + n : n;
+    // 3. Rotación de Fondos (Fotos)
+    var bgImages = [
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1024&q=80",
+      "https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=1024&q=80",
+      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1024&q=80",
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1024&q=80"
+    ];
+    var currentBg = 0;
+    var bgLayer = document.getElementById('bg-layer');
+
+    function changeBackground() {
+      bgLayer.style.opacity = '0.1';
+      setTimeout(function() {
+        currentBg = (currentBg + 1) % bgImages.length;
+        bgLayer.style.backgroundImage = 'url(' + bgImages[currentBg] + ')';
+        bgLayer.style.opacity = '0.45';
+      }, 1500);
     }
+    bgLayer.style.backgroundImage = 'url(' + bgImages[0] + ')';
+    setInterval(changeBackground, 45000); // Cambia cada 45 segundos
 
-    var dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-    var meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-
-    function updateClock() {
-      var now = new Date();
-      var h = pad(now.getHours());
-      var m = pad(now.getMinutes());
-      var s = pad(now.getSeconds());
-      document.getElementById('clock').innerHTML = h + ':' + m + ':' + s;
-
-      var diaSemana = dias[now.getDay()];
-      var dia = now.getDate();
-      var mes = meses[now.getMonth()];
-      var anio = now.getFullYear();
-      document.getElementById('date').innerHTML = diaSemana + ', ' + dia + ' de ' + mes + ' de ' + anio;
-    }
-
-    setInterval(updateClock, 1000);
-    updateClock();
-
-    // 3. Clima
+    // 4. Clima Robusto para iOS 9
     var LAT = -13.5319;
     var LON = -71.9675;
 
+    function getWeatherDescription(code) {
+      if (code === 0) return "Despejado ☀️";
+      if (code <= 3) return "Parcialmente nublado ⛅";
+      if (code <= 48) return "Niebla / Neblina 🌫️";
+      if (code <= 67) return "Lluvia ligera / Llovizna 🌧️";
+      if (code <= 77) return "Nieve ❄️";
+      if (code <= 82) return "Lluvia fuerte 🌧️";
+      return "Tormenta eléctrica ⛈️";
+    }
+
     function fetchWeather() {
+      var script = document.createElement('script');
+      // Callback global para recibir datos limpios sin bloqueos CORS
+      window.handleWeatherResponse = function(data) {
+        try {
+          if (data && data.current_weather) {
+            document.getElementById('temp').innerHTML = Math.round(data.current_weather.temperature) + '°C';
+            document.getElementById('wind-speed').innerHTML = 'Viento: ' + data.current_weather.windspeed + ' km/h';
+            document.getElementById('weather-desc').innerHTML = getWeatherDescription(data.current_weather.weathercode);
+          }
+        } catch(e) {}
+      };
+
+      // Fallback directo por XMLHttpRequest estándar
       var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON + '&current_weather=true';
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
@@ -145,15 +310,16 @@
           try {
             var data = JSON.parse(xhr.responseText);
             document.getElementById('temp').innerHTML = Math.round(data.current_weather.temperature) + '°C';
-            document.getElementById('wind').innerHTML = 'Viento: ' + data.current_weather.windspeed + ' km/h';
-          } catch(e) {}
+            document.getElementById('wind-speed').innerHTML = 'Viento: ' + data.current_weather.windspeed + ' km/h';
+            document.getElementById('weather-desc').innerHTML = getWeatherDescription(data.current_weather.weathercode);
+          } catch(err) {}
         }
       };
       xhr.send();
     }
 
     fetchWeather();
-    setInterval(fetchWeather, 900000);
+    setInterval(fetchWeather, 600000); // Actualiza cada 10 minutos
   </script>
 </body>
 </html>
