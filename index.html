@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Estación iPad</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: #0b0f19;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .clock { font-size: 5.5rem; font-weight: 300; letter-spacing: -2px; }
+    .date { font-size: 1.4rem; color: #94a3b8; text-transform: capitalize; margin-top: -5px; }
+    .weather-card {
+      margin-top: 30px;
+      padding: 15px 30px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .temp { font-size: 3rem; font-weight: bold; color: #38bdf8; }
+    .details { font-size: 1rem; color: #cbd5e1; line-height: 1.4; }
+  </style>
+</head>
+<body>
+
+  <div class="clock" id="clock">00:00:00</div>
+  <div class="date" id="date">Cargando fecha...</div>
+
+  <div class="weather-card">
+    <div class="temp" id="temp">--°C</div>
+    <div class="details">
+      <div id="wind">Viento: -- km/h</div>
+      <div id="city">Cusco</div>
+    </div>
+  </div>
+
+  <script>
+    function updateClock() {
+      var now = new Date();
+      var hours = String(now.getHours()).padStart(2, '0');
+      var minutes = String(now.getMinutes()).padStart(2, '0');
+      var seconds = String(now.getSeconds()).padStart(2, '0');
+      document.getElementById('clock').innerText = hours + ':' + minutes + ':' + seconds;
+
+      var options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      document.getElementById('date').innerText = now.toLocaleDateString('es-ES', options);
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Coordenadas fijadas para Cusco
+    var LAT = -13.5319;
+    var LON = -71.9675;
+
+    function fetchWeather() {
+      var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON + '&current_weather=true';
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          document.getElementById('temp').innerText = Math.round(data.current_weather.temperature) + '°C';
+          document.getElementById('wind').innerText = 'Viento: ' + data.current_weather.windspeed + ' km/h';
+        }
+      };
+      xhr.send();
+    }
+
+    fetchWeather();
+    setInterval(fetchWeather, 900000);
+  </script>
+</body>
+</html>
