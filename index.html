@@ -5,36 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Dashboard iPad</title>
+  <title>Dashboard Cusco</title>
   <style>
-    * { -webkit-box-sizing: border-box; box-sizing: border-box; margin: 0; padding: 0; }
+    * { 
+      -webkit-box-sizing: border-box; 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+    
     html, body {
       width: 100%;
       height: 100%;
-      background-color: #0b0f19;
+      background-color: #0a0e17;
       color: #ffffff;
       font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
       overflow: hidden;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
-    /* Fondo dinámico de fotos con transición */
+    /* Fondo con gradiente animado */
     #bg-layer {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-size: cover;
-      background-position: center;
-      -webkit-transition: opacity 1.5s ease-in-out;
-      transition: opacity 1.5s ease-in-out;
+      background: linear-gradient(135deg, #0a0e17 0%, #1a1f35 50%, #0a0e17 100%);
       z-index: 1;
-      opacity: 0.45;
+      animation: gradientShift 20s ease infinite;
     }
 
-    .overlay {
+    @keyframes gradientShift {
+      0% { background: linear-gradient(135deg, #0a0e17 0%, #1a1f35 50%, #0a0e17 100%); }
+      50% { background: linear-gradient(135deg, #1a1f35 0%, #0a0e17 50%, #1a1f35 100%); }
+      100% { background: linear-gradient(135deg, #0a0e17 0%, #1a1f35 50%, #0a0e17 100%); }
+    }
+
+    /* Efecto de partículas o estrellas */
+    .stars {
       position: absolute;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: -webkit-radial-gradient(center, ellipse cover, rgba(11,15,25,0.4) 0%, rgba(11,15,25,0.85) 100%);
-      background: radial-gradient(ellipse at center, rgba(11,15,25,0.4) 0%, rgba(11,15,25,0.85) 100%);
       z-index: 2;
+      background-image: 
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(2px 2px at 60% 40%, rgba(255,255,255,0.3), transparent),
+        radial-gradient(2px 2px at 80% 80%, rgba(255,255,255,0.2), transparent),
+        radial-gradient(2px 2px at 30% 90%, rgba(255,255,255,0.25), transparent),
+        radial-gradient(2px 2px at 70% 20%, rgba(255,255,255,0.2), transparent);
+      animation: twinkle 3s ease infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
     .container {
@@ -42,155 +65,215 @@
       z-index: 3;
       width: 100%;
       height: 100%;
-      display: -webkit-flex;
       display: flex;
-      -webkit-flex-direction: row;
-      flex-direction: row;
-      -webkit-align-items: center;
-      align-items: center;
-      -webkit-justify-content: space-around;
-      justify-content: space-around;
-      padding: 30px;
-    }
-
-    /* 1. Calendario estilo Hoja/Widget (Izquierda) */
-    .calendar-card {
-      width: 220px;
-      background: #ffffff;
-      border-radius: 18px;
-      overflow: hidden;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-      text-align: center;
-    }
-    .cal-header {
-      background: #e11d48;
-      color: #ffffff;
-      font-weight: bold;
-      font-size: 1.4rem;
-      padding: 10px 0;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-    .cal-day-num {
-      color: #1e293b;
-      font-size: 5.5rem;
-      font-weight: 800;
-      line-height: 1;
-      padding: 15px 0 5px 0;
-    }
-    .cal-day-name {
-      color: #64748b;
-      font-size: 1.3rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      padding-bottom: 18px;
-      letter-spacing: 1px;
-    }
-
-    /* 2. Sección Derecha: Reloj, Saludo, Frases y Clima */
-    .right-section {
-      display: -webkit-flex;
-      display: flex;
-      -webkit-flex-direction: column;
       flex-direction: column;
-      -webkit-align-items: flex-end;
-      align-items: flex-end;
-      text-align: right;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
     }
 
-    .greeting-box {
-      font-size: 1.8rem;
-      font-weight: 400;
-      color: #38bdf8;
-      margin-bottom: 5px;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.7);
-      min-height: 2.2rem;
-      -webkit-transition: opacity 0.8s ease;
-      transition: opacity 0.8s ease;
+    /* Reloj Digital Principal */
+    .clock-section {
+      text-align: center;
+      margin-bottom: 30px;
     }
 
     .digital-clock {
-      font-size: 6.5rem;
-      font-weight: 200;
-      letter-spacing: -2px;
+      font-size: 9rem;
+      font-weight: 100;
+      letter-spacing: -4px;
       line-height: 1;
-      text-shadow: 0 4px 20px rgba(0,0,0,0.8);
-    }
-    .digital-clock span.seconds {
-      font-size: 3.2rem;
-      color: #94a3b8;
-      margin-left: 4px;
-    }
-
-    .phrase-box {
-      font-size: 1.15rem;
-      font-style: italic;
-      color: #e2e8f0;
-      margin: 15px 0 20px 0;
-      max-width: 420px;
-      line-height: 1.4;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-      min-height: 2.5rem;
-      -webkit-transition: opacity 0.8s ease;
-      transition: opacity 0.8s ease;
+      text-shadow: 
+        0 0 20px rgba(56, 189, 248, 0.5),
+        0 0 40px rgba(56, 189, 248, 0.3),
+        0 0 60px rgba(56, 189, 248, 0.2);
+      animation: clockGlow 2s ease-in-out infinite;
     }
 
-    /* 3. Tarjeta de Clima */
-    .weather-widget {
-      background: rgba(15, 23, 42, 0.65);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      padding: 12px 24px;
-      border-radius: 14px;
-      display: -webkit-flex;
-      display: flex;
-      -webkit-align-items: center;
-      align-items: center;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-    }
-    .temp-value {
-      font-size: 2.8rem;
-      font-weight: 700;
+    .digital-clock .seconds {
+      font-size: 4rem;
       color: #38bdf8;
-      margin-right: 15px;
+      margin-left: 8px;
     }
-    .weather-info {
-      text-align: left;
-      font-size: 0.95rem;
-      color: #cbd5e1;
-      line-height: 1.3;
+
+    .digital-clock .ampm {
+      font-size: 3rem;
+      color: #94a3b8;
+      margin-left: 15px;
+      vertical-align: super;
+    }
+
+    @keyframes clockGlow {
+      0%, 100% { text-shadow: 0 0 20px rgba(56, 189, 248, 0.5), 0 0 40px rgba(56, 189, 248, 0.3); }
+      50% { text-shadow: 0 0 30px rgba(56, 189, 248, 0.8), 0 0 60px rgba(56, 189, 248, 0.5); }
+    }
+
+    .date-info {
+      font-size: 1.8rem;
+      color: #94a3b8;
+      margin-top: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Sección de Calendario y Tipo de Cambio */
+    .info-section {
+      display: flex;
+      gap: 40px;
+      align-items: center;
+      margin-top: 20px;
+    }
+
+    /* Calendario */
+    .calendar-card {
+      width: 280px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      overflow: hidden;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .cal-header {
+      background: linear-gradient(135deg, #e11d48 0%, #ef4444 100%);
+      color: #ffffff;
+      font-weight: bold;
+      font-size: 2rem;
+      padding: 15px 0;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+    }
+
+    .cal-day-num {
+      color: #ffffff;
+      font-size: 7rem;
+      font-weight: 800;
+      line-height: 1;
+      padding: 20px 0 10px 0;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+    }
+
+    .cal-day-name {
+      color: #38bdf8;
+      font-size: 1.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      padding-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    /* Widget de Tipo de Cambio */
+    .exchange-card {
+      width: 280px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .exchange-title {
+      font-size: 1.5rem;
+      color: #94a3b8;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    .exchange-rate {
+      font-size: 4.5rem;
+      font-weight: 700;
+      color: #10b981;
+      text-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
+      margin-bottom: 15px;
+    }
+
+    .exchange-symbol {
+      font-size: 1.8rem;
+      color: #94a3b8;
+    }
+
+    .exchange-update {
+      font-size: 1rem;
+      color: #64748b;
+      margin-top: 15px;
+    }
+
+    /* Saludo */
+    .greeting-box {
+      font-size: 2.2rem;
+      font-weight: 300;
+      color: #38bdf8;
+      margin-top: 30px;
+      text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+      letter-spacing: 1px;
+    }
+
+    /* Responsive para pantallas más pequeñas */
+    @media (max-width: 768px) {
+      .digital-clock {
+        font-size: 6rem;
+      }
+      .digital-clock .seconds {
+        font-size: 3rem;
+      }
+      .info-section {
+        flex-direction: column;
+        gap: 20px;
+      }
+      .calendar-card, .exchange-card {
+        width: 250px;
+      }
+      .cal-day-num {
+        font-size: 5rem;
+      }
+      .exchange-rate {
+        font-size: 3.5rem;
+      }
     }
   </style>
 </head>
 <body>
 
   <div id="bg-layer"></div>
-  <div class="overlay"></div>
+  <div class="stars"></div>
 
   <div class="container">
-    <!-- Widget Calendario (Izquierda) -->
-    <div class="calendar-card">
-      <div class="cal-header" id="cal-month">---</div>
-      <div class="cal-day-num" id="cal-day">--</div>
-      <div class="cal-day-name" id="cal-weekday">---</div>
+    <!-- Reloj Digital -->
+    <div class="clock-section">
+      <div class="digital-clock">
+        <span id="hours-mins">00:00</span>
+        <span class="seconds" id="secs">:00</span>
+        <span class="ampm" id="ampm">AM</span>
+      </div>
+      <div class="date-info" id="date-info">Lunes, 1 de Enero</div>
     </div>
 
-    <!-- Sección Reloj + Clima (Derecha) -->
-    <div class="right-section">
-      <div class="greeting-box" id="greeting">¡Hola Wali!</div>
-      <div class="digital-clock">
-        <span id="hours-mins">00:00</span><span class="seconds" id="secs">:00</span>
+    <!-- Calendario y Tipo de Cambio -->
+    <div class="info-section">
+      <div class="calendar-card">
+        <div class="cal-header" id="cal-month">Enero</div>
+        <div class="cal-day-num" id="cal-day">1</div>
+        <div class="cal-day-name" id="cal-weekday">Lunes</div>
       </div>
-      <div class="phrase-box" id="phrase">"Cada día es una nueva oportunidad para crear algo genial."</div>
-      
-      <div class="weather-widget">
-        <div class="temp-value" id="temp">--°C</div>
-        <div class="weather-info">
-          <div id="weather-desc">Cargando clima...</div>
-          <div id="wind-speed">Viento: -- km/h</div>
-          <div><strong>Cusco</strong></div>
+
+      <div class="exchange-card">
+        <div class="exchange-title">USD/PEN</div>
+        <div class="exchange-rate">
+          <span class="exchange-symbol">S/ </span>
+          <span id="exchange-rate">--.--</span>
         </div>
+        <div class="exchange-update" id="exchange-update">Actualizando...</div>
       </div>
     </div>
+
+    <!-- Saludo -->
+    <div class="greeting-box" id="greeting">¡Hola Wali! 👋</div>
   </div>
 
   <script>
@@ -204,18 +287,124 @@
       var now = new Date();
       
       // Reloj
-      document.getElementById('hours-mins').innerHTML = pad(now.getHours()) + ':' + pad(now.getMinutes());
+      var hours = now.getHours();
+      var ampm = hours >= 12 ? 'PM' : 'AM';
+      var hours12 = hours % 12;
+      if (hours12 === 0) hours12 = 12;
+      
+      document.getElementById('hours-mins').innerHTML = pad(hours12) + ':' + pad(now.getMinutes());
       document.getElementById('secs').innerHTML = ':' + pad(now.getSeconds());
+      document.getElementById('ampm').innerHTML = ampm;
+
+      // Fecha completa
+      document.getElementById('date-info').innerHTML = 
+        diasSemana[now.getDay()] + ', ' + now.getDate() + ' de ' + meses[now.getMonth()] + ' de ' + now.getFullYear();
 
       // Calendario
       document.getElementById('cal-month').innerHTML = meses[now.getMonth()];
       document.getElementById('cal-day').innerHTML = now.getDate();
       document.getElementById('cal-weekday').innerHTML = diasSemana[now.getDay()];
     }
+    
     setInterval(updateDateTime, 1000);
     updateDateTime();
 
-    // 2. Saludos y Frases Aleatorias
+    // 2. Tipo de Cambio USD/PEN
+    var exchangeRate = null;
+    var lastUpdate = null;
+
+    function loadExchangeRate() {
+      // Verificar si ya tenemos una tasa guardada de hoy
+      var savedRate = localStorage.getItem('usd_pen_rate');
+      var savedDate = localStorage.getItem('usd_pen_date');
+      var today = new Date().toDateString();
+
+      if (savedRate && savedDate === today) {
+        // Usar tasa guardada de hoy
+        exchangeRate = parseFloat(savedRate);
+        displayExchangeRate();
+        return;
+      }
+
+      // Si no hay tasa de hoy, intentar obtenerla de la API
+      fetchExchangeRate();
+    }
+
+    function fetchExchangeRate() {
+      // Usando exchangerate-api.com (gratis, sin key para uso básico)
+      var url = 'https://open.er-api.com/v6/latest/USD';
+      
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            try {
+              var data = JSON.parse(xhr.responseText);
+              if (data && data.rates && data.rates.PEN) {
+                exchangeRate = data.rates.PEN;
+                // Guardar en localStorage
+                localStorage.setItem('usd_pen_rate', exchangeRate);
+                localStorage.setItem('usd_pen_date', new Date().toDateString());
+                displayExchangeRate();
+              }
+            } catch(err) {
+              showExchangeError();
+            }
+          } else {
+            showExchangeError();
+          }
+        }
+      };
+      xhr.send();
+    }
+
+    function displayExchangeRate() {
+      if (exchangeRate) {
+        document.getElementById('exchange-rate').innerHTML = exchangeRate.toFixed(2);
+        
+        var now = new Date();
+        var updateTime = pad(now.getHours()) + ':' + pad(now.getMinutes());
+        document.getElementById('exchange-update').innerHTML = 'Actualizado: ' + updateTime;
+      }
+    }
+
+    function showExchangeError() {
+      document.getElementById('exchange-rate').innerHTML = '--.--';
+      document.getElementById('exchange-update').innerHTML = 'No disponible';
+      
+      // Reintentar en 30 minutos
+      setTimeout(fetchExchangeRate, 1800000);
+    }
+
+    // Programar actualización automática a las 6 AM
+    function scheduleNextUpdate() {
+      var now = new Date();
+      var nextUpdate = new Date(now);
+      nextUpdate.setHours(6, 0, 0, 0);
+      
+      if (nextUpdate <= now) {
+        nextUpdate.setDate(nextUpdate.getDate() + 1);
+      }
+      
+      var timeUntilUpdate = nextUpdate - now;
+      console.log('Próxima actualización: ' + nextUpdate);
+      console.log('En ' + Math.round(timeUntilUpdate / 1000 / 60) + ' minutos');
+      
+      setTimeout(function() {
+        fetchExchangeRate();
+        // Programar la siguiente actualización
+        scheduleNextUpdate();
+      }, timeUntilUpdate);
+    }
+
+    // Cargar tipo de cambio inicial
+    loadExchangeRate();
+    
+    // Programar actualizaciones diarias
+    scheduleNextUpdate();
+
+    // 3. Saludos
     var greetings = [
       "¡Hola Wali! 👋",
       "¡Hola Allison! 😊",
@@ -225,99 +414,32 @@
       "Hola Allison 🌸"
     ];
 
-    var phrases = [
-      "\"Cada día es una oportunidad para aprender algo nuevo.\"",
-      "\"La constancia y el enfoque construyen grandes cosas.\"",
-      "\"Disfruta de los pequeños momentos de hoy.\"",
-      "\"Crea soluciones simples para problemas complejos.\"",
-      "\"Respira profundo y sigue adelante.\""
-    ];
-
-    function rotateMessages() {
+    function rotateGreeting() {
       var greetElem = document.getElementById('greeting');
-      var phraseElem = document.getElementById('phrase');
-
       greetElem.style.opacity = '0';
-      phraseElem.style.opacity = '0';
-
+      
       setTimeout(function() {
         var gIndex = Math.floor(Math.random() * greetings.length);
-        var pIndex = Math.floor(Math.random() * phrases.length);
-
         greetElem.innerHTML = greetings[gIndex];
-        phraseElem.innerHTML = phrases[pIndex];
-
         greetElem.style.opacity = '1';
-        phraseElem.style.opacity = '1';
-      }, 800);
+      }, 1000);
     }
-    setInterval(rotateMessages, 18000);
+    
+    setInterval(rotateGreeting, 30000); // Cambia cada 30 segundos
 
-    // 3. Rotación de Fondos (Fotos)
-    var bgImages = [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1024&q=80",
-      "https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=1024&q=80",
-      "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1024&q=80",
-      "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1024&q=80"
-    ];
-    var currentBg = 0;
-    var bgLayer = document.getElementById('bg-layer');
-
-    function changeBackground() {
-      bgLayer.style.opacity = '0.1';
+    // 4. Efecto de brillo en el reloj cada segundo
+    function pulseClock() {
+      var clock = document.querySelector('.digital-clock');
+      clock.style.transform = 'scale(1.02)';
       setTimeout(function() {
-        currentBg = (currentBg + 1) % bgImages.length;
-        bgLayer.style.backgroundImage = 'url(' + bgImages[currentBg] + ')';
-        bgLayer.style.opacity = '0.45';
-      }, 1500);
+        clock.style.transform = 'scale(1)';
+      }, 100);
     }
-    bgLayer.style.backgroundImage = 'url(' + bgImages[0] + ')';
-    setInterval(changeBackground, 45000); // Cambia cada 45 segundos
-
-    // 4. Clima Robusto para iOS 9
-    var LAT = -13.5319;
-    var LON = -71.9675;
-
-    function getWeatherDescription(code) {
-      if (code === 0) return "Despejado ☀️";
-      if (code <= 3) return "Parcialmente nublado ⛅";
-      if (code <= 48) return "Niebla / Neblina 🌫️";
-      if (code <= 67) return "Lluvia ligera / Llovizna 🌧️";
-      if (code <= 77) return "Nieve ❄️";
-      if (code <= 82) return "Lluvia fuerte 🌧️";
-      return "Tormenta eléctrica ⛈️";
-    }
-
-    function fetchWeather() {
-      var script = document.createElement('script');
-      // Callback global para recibir datos limpios sin bloqueos CORS
-      window.handleWeatherResponse = function(data) {
-        try {
-          if (data && data.current_weather) {
-            document.getElementById('temp').innerHTML = Math.round(data.current_weather.temperature) + '°C';
-            document.getElementById('wind-speed').innerHTML = 'Viento: ' + data.current_weather.windspeed + ' km/h';
-            document.getElementById('weather-desc').innerHTML = getWeatherDescription(data.current_weather.weathercode);
-          }
-        } catch(e) {}
-      };
-
-      // Fallback directo por XMLHttpRequest estándar
-      var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON + '&current_weather=true';
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', url, true);
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          try {
-            var data = JSON.parse(xhr.responseText);
-            document.getElementById('temp').innerHTML = Math.round(data.current_weather.temperature) + '°C';
-            document.getElementById('wind-speed').innerHTML = 'Viento: ' + data.current_weather.windspeed + ' km/h';
-            document.getElementById('weather-desc').innerHTML = getWeatherDescription(data.current_weather.weathercode);
-          } catch(err) {}
-        }
-      };
-      xhr.send();
-    }
-
+    
+    setInterval(pulseClock, 1000);
+  </script>
+</body>
+</html>
     fetchWeather();
     setInterval(fetchWeather, 600000); // Actualiza cada 10 minutos
   </script>
