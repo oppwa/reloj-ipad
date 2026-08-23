@@ -2,66 +2,137 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Estación iPad</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
+    * { -webkit-box-sizing: border-box; box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      width: 100%;
+      height: 100%;
       background-color: #0b0f19;
       color: #ffffff;
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: -apple-system, "Helvetica Neue", Helvetica, Arial, sans-serif;
       overflow: hidden;
-    }
-    .clock { font-size: 5.5rem; font-weight: 300; letter-spacing: -2px; }
-    .date { font-size: 1.4rem; color: #94a3b8; text-transform: capitalize; margin-top: -5px; }
-    .weather-card {
-      margin-top: 30px;
-      padding: 15px 30px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 16px;
+      display: -webkit-flex;
       display: flex;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-align-items: center;
       align-items: center;
-      gap: 20px;
     }
-    .temp { font-size: 3rem; font-weight: bold; color: #38bdf8; }
-    .details { font-size: 1rem; color: #cbd5e1; line-height: 1.4; }
+    .greeting {
+      font-size: 1.8rem;
+      font-weight: 300;
+      color: #38bdf8;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      min-height: 2.2rem;
+      opacity: 1;
+      -webkit-transition: opacity 0.8s ease-in-out;
+      transition: opacity 0.8s ease-in-out;
+    }
+    .greeting.fade {
+      opacity: 0;
+    }
+    .clock {
+      font-size: 6rem;
+      font-weight: 200;
+      letter-spacing: -2px;
+    }
+    .date {
+      font-size: 1.6rem;
+      color: #94a3b8;
+      text-transform: capitalize;
+      margin-top: 5px;
+    }
+    .weather-card {
+      margin-top: 25px;
+      padding: 15px 35px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+    }
+    .temp {
+      font-size: 3.2rem;
+      font-weight: bold;
+      color: #38bdf8;
+      margin-right: 20px;
+    }
+    .details {
+      font-size: 1.1rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
   </style>
 </head>
 <body>
 
-  <div class="clock" id="clock">00:00:00</div>
-  <div class="date" id="date">Cargando fecha...</div>
+  <div class="greeting" id="greeting">¡Hola Wali!</div>
+  <div class="clock" id="clock">--:--:--</div>
+  <div class="date" id="date">Cargando...</div>
 
   <div class="weather-card">
     <div class="temp" id="temp">--°C</div>
     <div class="details">
       <div id="wind">Viento: -- km/h</div>
-      <div id="city">Cusco</div>
+      <div>Cusco</div>
     </div>
   </div>
 
   <script>
+    // 1. Saludos aleatorios periódicos
+    var greetings = [
+      "¡Hola Wali!",
+      "¡Hola Allison!",
+      "Que tengan un gran día ✨",
+      "Hola Wali 👋",
+      "Hola Allison 😊"
+    ];
+    var greetingElem = document.getElementById('greeting');
+
+    function updateGreeting() {
+      greetingElem.className = 'greeting fade';
+      setTimeout(function() {
+        var randomIndex = Math.floor(Math.random() * greetings.length);
+        greetingElem.innerHTML = greetings[randomIndex];
+        greetingElem.className = 'greeting';
+      }, 800);
+    }
+    setInterval(updateGreeting, 20000); // Cambia cada 20 segundos
+
+    // 2. Reloj en tiempo real
+    function pad(n) {
+      return n < 10 ? '0' + n : n;
+    }
+
+    var dias = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+    var meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
     function updateClock() {
       var now = new Date();
-      var hours = String(now.getHours()).padStart(2, '0');
-      var minutes = String(now.getMinutes()).padStart(2, '0');
-      var seconds = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('clock').innerText = hours + ':' + minutes + ':' + seconds;
+      var h = pad(now.getHours());
+      var m = pad(now.getMinutes());
+      var s = pad(now.getSeconds());
+      document.getElementById('clock').innerHTML = h + ':' + m + ':' + s;
 
-      var options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-      document.getElementById('date').innerText = now.toLocaleDateString('es-ES', options);
+      var diaSemana = dias[now.getDay()];
+      var dia = now.getDate();
+      var mes = meses[now.getMonth()];
+      var anio = now.getFullYear();
+      document.getElementById('date').innerHTML = diaSemana + ', ' + dia + ' de ' + mes + ' de ' + anio;
     }
+
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Coordenadas fijadas para Cusco
+    // 3. Clima
     var LAT = -13.5319;
     var LON = -71.9675;
 
@@ -69,11 +140,13 @@
       var url = 'https://api.open-meteo.com/v1/forecast?latitude=' + LAT + '&longitude=' + LON + '&current_weather=true';
       var xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
-      xhr.onload = function() {
-        if (xhr.status === 200) {
-          var data = JSON.parse(xhr.responseText);
-          document.getElementById('temp').innerText = Math.round(data.current_weather.temperature) + '°C';
-          document.getElementById('wind').innerText = 'Viento: ' + data.current_weather.windspeed + ' km/h';
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          try {
+            var data = JSON.parse(xhr.responseText);
+            document.getElementById('temp').innerHTML = Math.round(data.current_weather.temperature) + '°C';
+            document.getElementById('wind').innerHTML = 'Viento: ' + data.current_weather.windspeed + ' km/h';
+          } catch(e) {}
         }
       };
       xhr.send();
